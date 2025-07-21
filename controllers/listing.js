@@ -31,20 +31,9 @@ module.exports.showListing=(async (req, res) => {
     res.render("listings/show.ejs", { listing });
 });
 
-// module.exports.createListing=(async (req, res) => {
-//     let url =req.file.path;
-//     let filename= req.file.filename;
-//     const listing = new Listing(req.body.listing);
-//     listing.owner = req.user._id;
-//     listing.image={url,filename};
-//     await listing.save();
-//     req.flash("success", "New Listing Created!");
-//     res.redirect(`/listings/${listing._id}`); // ✅ Now this works
-// });
 module.exports.createListing = async (req, res) => {
   const { location } = req.body.listing;
 
-  // Step 1: Geocode location using OpenStreetMap (Nominatim)
   const geoRes = await axios.get("https://nominatim.openstreetmap.org/search", {
     params: {
       q: location,
@@ -58,17 +47,25 @@ module.exports.createListing = async (req, res) => {
 
   const coordinates = geoRes.data[0]
     ? [parseFloat(geoRes.data[0].lon), parseFloat(geoRes.data[0].lat)]
-    : [0, 0]; // fallback
-
-  // Step 2: Create new listing
-  let url = req.file.path;
-  let filename = req.file.filename;
+    : [0, 0];
 
   const listing = new Listing(req.body.listing);
   listing.owner = req.user._id;
-  listing.image = { url, filename };
 
-  // Step 3: Save geometry
+  // ✅ Check if an image was uploaded
+  if (req.file) {
+  listing.image = {
+    url: req.file.path,
+    filename: req.file.filename
+  };
+} else {
+  listing.image = {
+    url: "https://res.cloudinary.com/demo/image/upload/v1700000000/default-listing.jpg",
+    filename: "default"
+  };
+}
+
+
   listing.geometry = {
     type: "Point",
     coordinates: coordinates
@@ -78,6 +75,7 @@ module.exports.createListing = async (req, res) => {
   req.flash("success", "New Listing Created!");
   res.redirect(`/listings/${listing._id}`);
 };
+
 
 
 module.exports.renderEditForm=(async(req,res)=>{

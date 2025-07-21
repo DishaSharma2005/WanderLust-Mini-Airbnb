@@ -12,9 +12,11 @@ const {storage}=require("../cloudConfig.js");
 const multer  = require('multer')
 const upload = multer({storage})
 
-
 const validateListing = (req, res, next) => {
     const { error } = listingSchema.validate(req.body);
+    console.log("🔍 VALIDATION BODY:", req.body);  // Add this
+    console.log("❌ VALIDATION ERROR:", error);    // And this
+
     if (error) {
         const errMsg = error.details.map((el) => el.message).join(", ");
         req.flash("error", errMsg);
@@ -23,9 +25,11 @@ const validateListing = (req, res, next) => {
     next();
 };
 
+
 router.route("/") // Index route //Create Route
-.get(wrapAsync (listingController.index) )
-.post(  isLoggedin, upload.single("listing[image]"),validateListing,wrapAsync(listingController.createListing));
+.get(wrapAsync (listingController.index) ).post(  isLoggedin, upload.single("listing[image]"),validateListing,wrapAsync(listingController.createListing));
+
+
 
 //New route
 router.get("/new",isLoggedin,listingController.renderNewForm);

@@ -28,7 +28,7 @@ const dbUrl = process.env.ATLAS_URL;
 const MongoStore = require('connect-mongo');
 
 async function main() {
-  // console.log("Connecting to:", dbUrl); // Debug ke liye
+// console.log("Connecting to:", dbUrl); // Debug ke liye
   await mongoose.connect(dbUrl);
   console.log("connected to DB");
 }
