@@ -2,16 +2,34 @@ const Listing =require("../models/listing.js");
 const axios = require("axios");
 
 
-module.exports.index=async(req,res)=>{
-    try {
-        const allListing = await Listing.find({});
-        console.log(allListing);
-        return res.render("listings/index.ejs", { allListing });
-    } catch (err) {
-        console.error("Error fetching listings:", err);
-        return res.status(500).send("Something went wrong while fetching listings.");
+// module.exports.index=async(req,res)=>{
+//     try {
+//         const allListing = await Listing.find({});
+//         console.log(allListing);
+//         return res.render("listings/index.ejs", { allListing });
+//     } catch (err) {
+//         console.error("Error fetching listings:", err);
+//         return res.status(500).send("Something went wrong while fetching listings.");
+//     }
+// }
+module.exports.index = async (req, res) => {
+    const { q } = req.query;
+    let allListing;
+
+    if (q) {
+        const regex = new RegExp(q, 'i');
+        allListing = await Listing.find({
+            $or: [
+                { title: regex },
+                { location: regex }
+            ]
+        });
+    } else {
+        allListing = await Listing.find({});
     }
-}
+    
+    res.render("listings/index", { allListing, q });
+};
 
 module.exports.renderNewForm=(req,res)=>{
      return res.render("listings/new.ejs");
