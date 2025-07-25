@@ -43,16 +43,52 @@
       #filters .filter:nth-child(n+6) {
         display: none;
       }
+@media (max-width: 768px) {
+  #filters {
+    gap: 0.2rem;
+    padding: 0.5rem 1rem;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  .filter {
+    flex: 0 0 auto;
+    text-align: center;
+    font-size: 0.75rem;
+    margin-right: 2rem;
+    width: 35px; /* Adjust as needed */
+  }
+
+  .filter i {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .tax-toggle {
+    flex: 0 0 auto;
+    font-size: 0.7rem;
+     padding: 0.35rem 0.75rem;
+    height: auto;
+    white-space: nowrap;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    align-items: center;
+  }
+}
+
+
     }
   </style>
 
   <div id="filters" class="px-3">
     <div class="filter"><div><i class="fa-solid fa-fire"></i></div><p>Trending</p></div>
     <div class="filter"><div><i class="fa-solid fa-bed"></i></div><p>Rooms</p></div>
-    <div class="filter"><div><i class="fa-solid fa-mountain-city"></i></div><p>Iconic Cities</p></div>
+    <div class="filter"><div><i class="fa-solid fa-mountain-city"></i></div><p>Cities</p></div>
     <div class="filter"><div><i class="fa-solid fa-mountain"></i></div><p>Mountains</p></div>
     <div class="filter"><div><i class="fa-brands fa-fort-awesome"></i></div><p>Castles</p></div>
-    <div class="filter"><div><i class="fa-solid fa-person-swimming"></i></div><p>Amazing Pools</p></div>
+    <div class="filter "><div><i class="fa-solid fa-person-swimming"></i></div><p>Amazing Pools</p></div>
     <div class="filter"><div><i class="fa-solid fa-tree"></i></div><p>Camping</p></div>
     <div class="filter"><div><i class="fa-solid fa-wheat-awn"></i></div><p>Farms</p></div>
     <div class="filter"><div><i class="fa-solid fa-snowflake"></i></div><p>Arctic</p></div>
@@ -69,7 +105,7 @@
   <% if (allListing.length === 0) { %>
   <div class="text-center mt-5">
     <h3>No results found for "<%= q %>"</h3>
-    <a href="/listings" class="btn btn-dark edit-btn mt-3">Back to all listings</a>
+    <a href="/listings" class="btn btn-dark edit-btn mt-3" style="color: black;">Back to all listings</a>
   </div>
 <% } else { %>
   <% if (q) { %>
