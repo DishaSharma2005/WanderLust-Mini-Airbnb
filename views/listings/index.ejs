@@ -77,6 +77,20 @@
     align-items: center;
   }
 }
+.wishlist-always {
+  display: inline;
+  color: #8b0000; /* dark red */
+  font-size: 1.3rem;
+}
+
+.wishlist-hover {
+  display: none;
+}
+
+.listing-card:hover .wishlist-hover {
+  display: inline;
+  font-size: 1.3rem;
+}
 
 
     }
@@ -113,25 +127,36 @@
       <h5 class="text-muted">Showing results for "<%= q %>"</h5>
     </div>
   <% } %>
-
+  <%} %>
   <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
-    <% for (let listing of allListing) { %>
-      <a href="/listings/<%= listing.id %>" class="listing-link">
-        <div class="card col listing-card">
-          <img class="card-img-top" src="<%= listing.image.url %>" alt="listing image" style="height: 18rem;">
-          <div class="card-img-overlay"></div>
+  <% for (let listing of allListing) { %>
+    <div class="col mb-4">
+      <div class="card listing-card h-100 position-relative">
+        <!-- Wishlist heart button -->
+        <!-- Heart placed outside overlay, absolutely positioned -->
+          <form action="/wishlist/<%= listing._id %>/toggle" method="POST" 
+                style="position: absolute; top: 10px; right: 10px; z-index: 2;">
+            <button type="submit" class="btn btn-light wishlist-button">
+              <% if (currUser && currUser.wishlist && currUser.wishlist.includes(listing._id.toString())) { %>
+                <i class="fa-solid fa-heart wishlist-always"></i>
+              <% } else { %>
+                <i class="fa-regular fa-heart wishlist-hover"></i>
+              <% } %>
+            </button>
+          </form>
+
+        <!-- Listing image & link -->
+        <a href="/listings/<%= listing.id %>" class="listing-link">
+          <img class="card-img-top rounded-top-4" src="<%= listing.image.url %>" alt="listing image" style="height: 18rem; object-fit: cover;">
           <div class="card-body">
-            <p class="card-text">
-              <%= listing.title %><br>
-              ₹<%= listing.price.toLocaleString("en-IN") %>/night
-              <i class="tax-info">&nbsp; &+18% GST</i>
-            </p>
+            <h5 class="card-title"><%= listing.title %></h5>
+            <p class="card-text">₹<%= listing.price %>/night</p>
           </div>
-        </div>
-      </a>
-    <% } %>
-  </div>
-<% } %>
+        </a>
+      </div>
+    </div>
+  <% } %>
+</div>
 
   <script>
     let taxSwitch = document.getElementById("flexSwitchCheckDefault");

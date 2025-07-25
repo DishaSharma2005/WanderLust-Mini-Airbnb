@@ -22,6 +22,7 @@ const flash = require("connect-flash");
 const listingsRouter=require("./routes/listing.js");
 const reviewsRouter=require("./routes/review.js");
 const userRouter=require("./routes/user.js");
+const wishlistRoutes = require("./routes/wishlist");
 
 const dbUrl = process.env.ATLAS_URL;
 
@@ -82,7 +83,9 @@ app.get("/", (req, res) => {
   res.redirect("/listings");
 });
 
+
 app.use("/listings",listingsRouter);
+app.use("/", wishlistRoutes);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/",userRouter);
 

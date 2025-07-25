@@ -28,7 +28,8 @@ module.exports.index = async (req, res) => {
         allListing = await Listing.find({});
     }
     
-    res.render("listings/index", { allListing, q });
+    res.render("listings/index", { allListing, q, currUser: req.user });
+
 };
 
 module.exports.renderNewForm=(req,res)=>{
