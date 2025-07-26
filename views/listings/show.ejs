@@ -71,33 +71,35 @@
     <%} %>
         <p><b>All Reviews</b></p>
       <div class="row">
-        <% if (listing.reviews && listing.reviews.length > 0) { %>
-          <% for (let review of listing.reviews) { %>
-            <div class="card mb-3 col-5 ms-3">
-              <div class="card-body">
-                <h5 class="card-title">@<%=review.author.username%></h5>
-                <p class="starability-result card-text" data-rating="<%= review.rating %>">
-                </p>
-                <p class="card-text"><%= review.comment %></p>
-              </div>
-              <div>
-                <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
-                  <button class="btn btn-sm btn-dark dlt-btn mb-3">Delete</button>
-                </form>
-              </div>
-            </div>
-          <% } %>
-        <% } else { %>
-          <p class="text-muted">No reviews yet.</p>
-        <% } %>
-  </div>
-  <% if (listing.geometry && listing.geometry.coordinates.length === 2) { %>
-  <div class="col-8 ">
+  <% if (listing.reviews && listing.reviews.length > 0) { %>
+    <% for (let review of listing.reviews) { %>
+      <div class="col-md-6 col-12 mb-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">@<%=review.author.username%></h5>
+            <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
+            <p class="card-text"><%= review.comment %></p>
+          </div>
+          <div class="text-end px-3 pb-2">
+            <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+              <button class="btn btn-sm btn-dark dlt-btn">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  <% } else { %>
+    <p class="text-muted">No reviews yet.</p>
+  <% } %>
+</div>
+
+ <% if (listing.geometry && listing.geometry.coordinates.length === 2) { %>
+  <div class="col-12 mt-5">
     <h3>Where you'll be</h3>
-    <br>
     <div id="map" style="height: 400px; width: 100%;"></div>
   </div>
 <% } %>
+
 
 
  <script>

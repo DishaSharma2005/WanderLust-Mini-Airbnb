@@ -14,28 +14,31 @@
   <% } else { %>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
       <% for (let listing of wishlist) { %>
-        <div class="col">
-          <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
-            <div class="card h-100 shadow-sm border-0 rounded-4 hover-shadow">
-              <img
-                src="<%= listing.image.url %>"
-                class="card-img-top rounded-top-4"
-                alt="listing"
-                style="height: 230px; object-fit: cover;"
-              />
-              <div class="card-body text-left">
-                <h5 class="card-title mb-1 fw-semibold"><%= listing.title %></h5>
-                <p class="card-text text-muted">₹<%= listing.price %>/night</p>
-              </div>
-            </div>
-          </a>
-          <form action="/wishlist/<%= listing._id %>/toggle" method="POST" class="mt-2 d-grid">
-            <button class="btn btn-outline-danger btn-sm w-100" type="submit">
-        <i class="fa-solid fa-heart-crack me-1"></i> Remove from Wishlist
-       </button>
-    </form>
-        </div>
-        
+       <div class="col">
+  <div class="card h-100 shadow-sm border-0 rounded-4 hover-shadow">
+    <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
+      <img
+        src="<%= listing.image.url %>"
+        class="card-img-top rounded-top-4"
+        alt="listing"
+        style="height: 230px; object-fit: cover;"
+      />
+      <div class="card-body text-left">
+        <h5 class="card-title mb-1 fw-semibold"><%= listing.title %></h5>
+        <p class="card-text text-muted">₹<%= listing.price %>/night</p>
+      </div>
+    </a>
+
+    <!-- 💡 Move the button inside card-footer for styling consistency -->
+    <div class="card-footer bg-white border-top-0 text-center">
+      <form action="/wishlist/<%= listing._id %>/toggle" method="POST">
+        <button class="btn btn-outline-danger btn-sm" type="submit">
+          <i class="fa-solid fa-heart-crack me-1"></i> Remove from Wishlist
+        </button>
+      </form>
+    </div>
+  </div>
+</div>  
       <% } %>
     </div>
   <% } %>
