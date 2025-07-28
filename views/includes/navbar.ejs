@@ -184,18 +184,29 @@
           </li>
           <li><a class="dropdown-item" href="/wishlist"><i class="fa-solid fa-heart text-danger"></i> Wishlist</a></li>
         <% } else { %>
-            <li class="nav-item">
-              <span class="navbar-text text-muted small">
-                Logged in as <strong class="text-dark"><%= currUser.username %></strong>
-              </span>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/wishlist"><i class="fa-solid fa-heart text-danger"></i> Wishlist</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/logout"><b>Logout</b></a>
-            </li>
-          <% } %>
+  <div class="d-flex flex-column align-items-start">
+    <ul class="navbar-nav me-auto mb-0 d-flex flex-row gap-3">
+      <li class="nav-item">
+        <a class="nav-link" href="/wishlist">
+          <i class="fa-solid fa-heart text-danger"></i> Wishlist
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/booking/mine">
+          <i class="fa-solid fa-calendar-check text-success"></i> My Bookings
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout"><b>Logout</b></a>
+      </li>
+    </ul>
+    <div class="text-muted small mt-2 d-none d-md-block ps-3">
+  Logged in as <strong class="text-dark"><%= currUser.username %></strong>
+</div>
+
+<% } %>
+
+
       </ul>
     </div>
   </div>
@@ -213,6 +224,10 @@
     <a href="/wishlist" onclick="closeSidebar()">
       <i class="fa-solid fa-heart text-danger"></i> Wishlist
     </a>
+    <a href="/bookings/mine" onclick="closeSidebar()">
+      <i class="fa-solid fa-calendar-check text-success"></i> My Bookings
+    </a>
+
     <a href="/logout" onclick="closeSidebar()">Logout</a>
   <% } %>
 </div>
