@@ -20,6 +20,7 @@
     background: none;
     border: none;
     display: none;
+    flex-shrink: 0; 
   }
   .sidebar {
     position: fixed;
@@ -116,6 +117,36 @@
     white-space: nowrap;
 }
   }
+  @media screen and (max-width: 576px) {
+  .navbar .container-fluid {
+    flex-wrap: nowrap;
+    overflow-x: hidden;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .search-bar-container {
+    flex: 1;
+    margin: 0 0.5rem;
+    min-width: 0; /* allows shrinking */
+  }
+
+  .search-bar-container form {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .navbar-brand {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+  }
+
+  .hamburger-custom {
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+  }
+}
+
 </style>
 
 <nav class="navbar bg-body-light border-bottom sticky-top">

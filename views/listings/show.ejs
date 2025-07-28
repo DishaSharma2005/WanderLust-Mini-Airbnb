@@ -116,12 +116,10 @@
     </div>
   </div>
 <% } %>
-
-
-
- <script>
-    window.listingCoordinates = <%- JSON.stringify(listing.geometry.coordinates) %>;
+<script>
+  window.listingCoordinates = <%- JSON.stringify(listing.geometry.coordinates) %>;
 </script>
+
 <% locals.scripts = '<script src="/js/map.js"></script>' %>
   </div>
   <br>
