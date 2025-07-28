@@ -1,21 +1,11 @@
 const Listing =require("../models/listing.js");
 const axios = require("axios");
+const Review = require("../models/review.js");
 
 
-// module.exports.index=async(req,res)=>{
-//     try {
-//         const allListing = await Listing.find({});
-//         console.log(allListing);
-//         return res.render("listings/index.ejs", { allListing });
-//     } catch (err) {
-//         console.error("Error fetching listings:", err);
-//         return res.status(500).send("Something went wrong while fetching listings.");
-//     }
-// }
 module.exports.index = async (req, res) => {
     const { q } = req.query;
     let allListing;
-
     if (q) {
         const regex = new RegExp(q, 'i');
         allListing = await Listing.find({
@@ -23,9 +13,9 @@ module.exports.index = async (req, res) => {
                 { title: regex },
                 { location: regex }
             ]
-        });
+        }).populate("reviews");  // ✅ FIXED
     } else {
-        allListing = await Listing.find({});
+        allListing = await Listing.find({}).populate("reviews");  // ✅ FIXED
     }
     
     res.render("listings/index", { allListing, q, currUser: req.user });
@@ -119,19 +109,22 @@ module.exports.updateListing=(async (req, res) => {
     res.redirect(`/listings/${id}`);
 });
 
-module.exports.deleteListing=(async (req, res) => {
-    const { id } = req.params;
-    const listing = await Listing.findById(id);
+module.exports.deleteListing = async (req, res) => {
+  const { id } = req.params;
+  const listing = await Listing.findById(id);
 
-    if (!listing) {
-        req.flash("error", "Listing not found!");
-        return res.redirect("/listings");
-    }
-   if (Array.isArray(listing.reviews) && listing.reviews.length > 0) {
-  await Review.deleteMany({ _id: { $in: listing.reviews } });
-   }
-    await Listing.findByIdAndDelete(id);
+  if (!listing) {
+    req.flash("error", "Listing not found!");
+    return res.redirect("/listings");
+  }
 
-    req.flash("success", "Listing deleted successfully!");
-    res.redirect("/listings");
-});
+  // Delete reviews safely
+  if (listing.reviews && listing.reviews.length > 0) {
+    await Review.deleteMany({ _id: { $in: listing.reviews } });
+  }
+
+  await Listing.findByIdAndDelete(id);
+
+  req.flash("success", "Listing deleted successfully!");
+  res.redirect("/listings");
+};

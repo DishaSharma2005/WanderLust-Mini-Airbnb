@@ -29,22 +29,19 @@
   </b></ul>
  </div>
   <br>
- <% if (currUser) { %>
-  <div class="btns d-flex gap-2">
-    <% if (currUser._id.equals(listing.owner._id)) { %>
-      <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark edit-btn">Edit</a>
-      <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
-        <button class="btn btn-dark dlt-btn">Delete</button>
-      </form>
-    <% } else { %>
-       <form action="/booking/<%= listing._id %>" method="POST"></form>
-      <a href="/booking/<%= listing._id %>/new" class="btn btn-dark edit-btn">Book Now</a>
+   <% if (currUser) { %>
+    <div class="btns d-flex gap-2">
+      <% if (currUser._id.equals(listing.owner._id)) { %>
+        <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark edit-btn">Edit</a>
+        <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+          <button class="btn btn-dark dlt-btn">Delete</button>
+        </form>
+      <% } else { %>
+        <a href="/booking/<%= listing._id %>/new" class="btn btn-dark edit-btn">Book Now</a>
+      <% } %>
+    </div>
+  <% } %>
 
-
-      </form>
-    <% } %>
-  </div>
-<% } %>
 
   <hr>
   <% if(currUser) { %>
@@ -78,25 +75,24 @@
     </form>
     <hr>
     <%} %>
-        <p><b>All Reviews</b></p>
-      <div class="row">
+       <p><b>All Reviews</b></p>
+<div class="row">
   <% if (listing.reviews && listing.reviews.length > 0) { %>
     <% for (let review of listing.reviews) { %>
       <div class="col-md-6 col-12 mb-3">
         <div class="card h-100">
           <div class="card-body">
-            <h5 class="card-title">@<%=review.author.username%></h5>
+            <h5 class="card-title">@<%= review.author.username %></h5>
             <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
             <p class="card-text"><%= review.comment %></p>
           </div>
-          <div class="text-end px-3 pb-2">
-           <% if (currUser && currUser._id.equals(review.author._id)) { %>
-                <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
-                  <button class="btn btn-sm btn-dark dlt-btn mb-3">Delete</button>
-                </form>
+          <% if (currUser && currUser._id.equals(review.author._id)) { %>
+            <div class="text-end px-3 pb-2">
+              <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                <button class="btn btn-sm btn-dark dlt-btn mb-3">Delete</button>
+              </form>
+            </div>
           <% } %>
-
-          </div>
         </div>
       </div>
     <% } %>
@@ -104,6 +100,7 @@
     <p class="text-muted">No reviews yet.</p>
   <% } %>
 </div>
+ 
 
  <% if (listing.geometry && listing.geometry.coordinates.length === 2) { %>
   <div class="map-container mt-5">
