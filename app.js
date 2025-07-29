@@ -15,6 +15,7 @@ const ExpressError=require("./utils/ExpressErrors.js");
 const passport=require("passport");
 const LocalStrategy=require("passport-local");
 const User=require("./models/user.js");
+const adminRoutes = require("./routes/admin");
 
 
 const session = require("express-session");
@@ -91,6 +92,7 @@ app.use("/", wishlistRoutes);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/",userRouter);
 app.use('/booking', bookingRoutes);
+app.use("/admin",adminRoutes);
 
 
 app.all(/.*/, (req, res, next) => {

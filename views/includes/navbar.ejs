@@ -203,6 +203,9 @@
     <div class="text-muted small mt-2 d-none d-md-block ps-3">
   Logged in as <strong class="text-dark"><%= currUser.username %></strong>
 </div>
+    <% if (currUser && currUser.role === "admin") { %>
+      <li><a class="dropdown-item" href="/admin/dashboard">Admin Dashboard</a></li>
+    <% } %>
 
 <% } %>
 

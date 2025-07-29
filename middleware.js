@@ -38,3 +38,10 @@ module.exports.isReviewAuthor= async (req,res,next)=>{
     }
     next();
 }
+module.exports.isAdmin = (req, res, next) => {
+    if (req.user && req.user.role === "admin") {
+        return next();
+    }
+    req.flash("error", "Unauthorized: Admins only");
+    return res.redirect("/listings");
+};

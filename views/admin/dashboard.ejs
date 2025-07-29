@@ -1,0 +1,29 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-5">
+  <h2 class="mb-4">Admin Dashboard</h2>
+
+  <h4>All Listings</h4>
+  <ul class="list-group mb-4">
+    <% listings.forEach(listing => { %>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <%= listing.title %> (by <%= listing.owner?.username || "Unknown" %>)
+        <form method="POST" action="/admin/listings/<%= listing._id %>?_method=DELETE">
+          <button class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+
+  <h4>All Reviews</h4>
+  <ul class="list-group">
+    <% reviews.forEach(review => { %>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <%= review.comment %> (by <%= review.author?.username || "Unknown" %>)
+        <form method="POST" action="/admin/reviews/<%= review._id %>?_method=DELETE">
+          <button class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+</div>
