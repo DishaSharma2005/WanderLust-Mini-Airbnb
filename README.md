@@ -5,7 +5,7 @@ Wanderlust is a full-stack travel accommodation web app inspired by Airbnb. It a
 
 > ⚠️ **Note:** This project is still a work in progress — future enhancements and polishing are planned!
 
-Live Demo: [Visit Site](https://wanderlust-your-render-link.com)  
+Live Demo: [Visit Site](https://wanderlust-mini-airbnb.onrender.com)  
 GitHub Repository: [Wanderlust Repo](https://github.com/DishaSharma2005/Wanderlust-Mini-Airbnb)
 
 ---
