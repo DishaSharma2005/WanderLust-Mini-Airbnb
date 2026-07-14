@@ -23,11 +23,11 @@ router.post("/wishlist/:id/toggle", isLoggedin, async (req, res) => {
 });
 
 router.get("/wishlist", isLoggedin, async (req, res) => {
-  const user = await User.findById(req.user._id).populate("wishlist");
-  console.log("✅ Wishlist Items:", user.wishlist);
-
- res.render("user/wishlist", { wishlist: user.wishlist });
-
+  const user = await User.findById(req.user._id).populate({
+    path: "wishlist",
+    populate: { path: "reviews" },
+  });
+  res.render("user/wishlist", { wishlist: user.wishlist || [] });
 });
 
 module.exports = router;

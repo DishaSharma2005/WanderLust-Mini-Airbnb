@@ -1,28 +1,42 @@
 <%= layout("/layouts/boilerplate") %>
 <br>
 <div class="row">
-    <h2 class="col-6 offset-3">Login </h2>
+    <h2 class="col-6 offset-3">Login</h2>
     <div class="col-6 offset-3">
         <form action="/login" method="POST" novalidate class="needs-validation">
              <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input name="username" placeholder=" Enter Username" type="text" class="form-control" id="username" required>
-                <div class="valid-feedback">valid user</div>
-                <div class="invalid-feedback">invalid user</div>
+                <label for="username" class="form-label">Username or Email</label>
+                <input
+                  name="username"
+                  placeholder="Enter username or email"
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  required
+                  autocomplete="username"
+                >
+                <div class="form-text">Use the username or email from when you signed up.</div>
+                <div class="invalid-feedback">Enter your username or email</div>
         </div>
          <div class="mb-3">
-                <label for="password" class="form-label">password</label>
-                <input name="password" placeholder=" Enter password" type="password" class="form-control" id="passwprd" required>
-                <div class="valid-feedback">valid password</div>
-                <div class="invalid-feedback">invalid password</div>
+                <label for="password" class="form-label">Password</label>
+                <input
+                  name="password"
+                  placeholder="Enter password"
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  required
+                  autocomplete="current-password"
+                >
+                <div class="invalid-feedback">Enter your password</div>
         </div>
-        <button class="btn btn-success ">Login</button>
+        <button class="btn btn-success">Login</button>
      </form>
         <div class="text-center mt-3 mb-4">
-            <p>New user?</p>
+            <p class="mb-2">New user?</p>
             <a href="/signup" class="btn btn-dark edit-btn">Create an Account</a>
        </div>
 
  </div>
  </div>
-

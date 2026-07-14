@@ -1,259 +1,159 @@
-<style>
-  .navbar-toggler.hamburger-custom {
-  font-size: 1.4rem;        /* Slightly smaller for mobile */
-  padding: 0.25rem 0.5rem;  /* Reduce clickable area padding */
-  border: none;
-  background: none;
-  box-shadow: none;
-  outline: none;
-}
-  .btn-search {
-    background-color: #ff5661;
-    border-radius: 15px;
-  }
-  .btn-search:hover {
-    background-color: #ff5661;
-  }
+<header class="ab-header">
+  <div class="ab-header-top">
+    <a class="ab-brand" href="/listings">
+      <i class="fa-solid fa-compass"></i>
+      <span>WanderLust</span>
+    </a>
 
-  .hamburger-custom {
-    font-size: 1.8rem;
-    background: none;
-    border: none;
-    display: none;
-    flex-shrink: 0; 
-  }
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -260px;
-    width: 250px;
-    height: 100%;
-    background-color: #fff;
-    z-index: 1050;
-    transition: left 0.3s ease;
-    padding: 1.5rem;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-  }
+    <nav class="ab-center-tabs" aria-label="Primary">
+      <a class="ab-tab active" href="/listings">
+        <i class="fa-solid fa-house"></i>
+        <span>Homes</span>
+      </a>
+      <a class="ab-tab" href="/listings?category=Trending">
+        <i class="fa-solid fa-binoculars"></i>
+        <span>Experiences</span>
+      </a>
+      <a class="ab-tab" href="/listings?category=Amazing%20Pools">
+        <i class="fa-solid fa-bell-concierge"></i>
+        <span>Services</span>
+      </a>
+    </nav>
 
-  .sidebar.active {
-    left: 0;
-  }
-
-  .sidebar a {
-    display: block;
-    margin: 1rem 0;
-    font-size: 1.1rem;
-    color: #333;
-    text-decoration: none;
-  }
-
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
-    display: none;
-    z-index: 1040;
-  }
-
-  .overlay.active {
-    display: block;
-  }
-    
-  @media screen and (max-width: 768px) {
-  form.d-flex {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .form-control {
-    width: 100%;
-  }
-
-  .btn-search {
-    width: 100%;
-  }
-  .navbar-collapse {
-      display: none !important;
-    }
-
-    .hamburger-custom {
-      display: block;
-    }
-   .navbar .container-fluid {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .hamburger-custom {
-    display: block;
-    font-size: 1.5rem;
-    margin-left: 0.5rem;
-  }
-
-  .search-bar-container {
-    flex-grow: 1;
-    margin: 0 0.5rem;
-  }
-
-  .search-bar-container form {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  .search-bar-container .form-control {
-    font-size: 0.9rem;
-    padding: 0.25rem 0.5rem;
-  }
-
-  .search-bar-container .btn-search {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.9rem;
-    border-radius: 10px;
-    white-space: nowrap;
-}
-  }
-  @media screen and (max-width: 576px) {
-  .navbar .container-fluid {
-    flex-wrap: nowrap;
-    overflow-x: hidden;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-  }
-
-  .search-bar-container {
-    flex: 1;
-    margin: 0 0.5rem;
-    min-width: 0; /* allows shrinking */
-  }
-
-  .search-bar-container form {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-  }
-
-  .navbar-brand {
-    font-size: 1.2rem;
-    margin-right: 0.5rem;
-  }
-
-  .hamburger-custom {
-    flex-shrink: 0;
-    margin-left: 0.5rem;
-  }
-}
-
-</style>
-
-<nav class="navbar bg-body-light border-bottom sticky-top">
-  <div class="container-fluid d-flex justify-content-between align-items-center">
-    <div class="d-flex align-items-center gap-3">
-  <a class="navbar-brand" href="/listings"><i class="fa-solid fa-compass"></i></a>
-  <div class="d-none d-md-flex gap-3">
-    <a class="nav-link" href="/listings"><b>Explore</b></a>
-    <a class="nav-link" href="/listings/new"><b>Airbnb your home</b></a>
-  </div>
-</div>
-
-   <!-- Search Bar -->
-<div class="search-bar-container mx-auto d-flex align-items-center" style="max-width: 600px;">
-  <form class="d-flex w-100" role="search" action="/listings" method="GET">
-    <input class="form-control me-2" type="search" placeholder="Search destinations" name="q"
-      value="<%= typeof q !== 'undefined' ? q : '' %>" aria-label="Search" />
-    <button class="btn btn-search" type="submit">Search</button>
-  </form>
-</div>
-<!-- Hamburger for mobile -->
-<button class="navbar-toggler hamburger-custom" id="hamburgerToggle" aria-label="Toggle navigation">
-  <i class="fas fa-bars"></i>
-</button>
-
-    <!-- Desktop Menu -->
-    <div class="d-none d-md-flex">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex flex-row gap-3">
-        <% if (!currUser) { %>
-          <li class="nav-item">
-            <a class="nav-link" href="/signup"><b>SignUp</b></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login"><b>Login</b></a>
-          </li>
-          <li><a class="dropdown-item" href="/wishlist"><i class="fa-solid fa-heart text-danger"></i> Wishlist</a></li>
-        <% } else { %>
-  <div class="d-flex flex-column align-items-start">
-    <ul class="navbar-nav me-auto mb-0 d-flex flex-row gap-3">
-      <li class="nav-item">
-        <a class="nav-link" href="/wishlist">
-          <i class="fa-solid fa-heart text-danger"></i> Wishlist
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/booking/mine">
-          <i class="fa-solid fa-calendar-check text-success"></i> My Bookings
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/logout"><b>Logout</b></a>
-      </li>
-    </ul>
-    <div class="text-muted small mt-2 d-none d-md-block ps-3">
-  Logged in as <strong class="text-dark"><%= currUser.username %></strong>
-</div>
-    <% if (currUser && currUser.role === "admin") { %>
-      <li><a class="dropdown-item" href="/admin/dashboard">Admin Dashboard</a></li>
-    <% } %>
-
-<% } %>
-
-
-      </ul>
+    <div class="ab-header-right">
+      <a class="ab-host-link" href="/listings/new">Become a host</a>
+      <button type="button" class="ab-menu-btn" id="abMenuBtn" aria-label="Open profile menu" aria-expanded="false">
+        <i class="fas fa-bars"></i>
+        <span class="ab-avatar">
+          <% if (currUser) { %>
+            <%= currUser.username.charAt(0).toUpperCase() %>
+          <% } else { %>
+            <i class="fa-regular fa-user"></i>
+          <% } %>
+        </span>
+      </button>
     </div>
   </div>
-</nav>
 
-<!-- Sidebar Menu (mobile only) -->
-<div class="sidebar" id="sidebar">
-  <a href="/listings" onclick="closeSidebar()">Explore</a>
-  <a href="/listings/new" onclick="closeSidebar()">Airbnb your home</a>
-  <% if (!currUser) { %>
-    <a href="/signup" onclick="closeSidebar()">Sign Up</a>
-    <a href="/login" onclick="closeSidebar()">Login</a>
-  <% } else { %>
-    <div class="text-muted small mb-2">Logged in as <strong><%= currUser.username %></strong></div>
-    <a href="/wishlist" onclick="closeSidebar()">
-      <i class="fa-solid fa-heart text-danger"></i> Wishlist
-    </a>
-    <a href="/bookings/mine" onclick="closeSidebar()">
-      <i class="fa-solid fa-calendar-check text-success"></i> My Bookings
-    </a>
+  <div class="ab-search-wrap">
+    <form class="ab-search" role="search" action="/listings" method="GET">
+      <div class="ab-search-seg">
+        <label for="abWhere">Where</label>
+        <input
+          id="abWhere"
+          type="search"
+          name="q"
+          placeholder="Search destinations"
+          value="<%= typeof q !== 'undefined' && q ? q : '' %>"
+          aria-label="Search destinations"
+        />
+      </div>
+      <div class="ab-search-seg hide-sm">
+        <label for="abCheckIn">Check-in</label>
+        <input
+          id="abCheckIn"
+          type="date"
+          name="checkIn"
+          value="<%= typeof checkIn !== 'undefined' && checkIn ? checkIn : '' %>"
+          aria-label="Check-in date"
+        />
+      </div>
+      <div class="ab-search-seg hide-sm">
+        <label for="abCheckOut">Check-out</label>
+        <input
+          id="abCheckOut"
+          type="date"
+          name="checkOut"
+          value="<%= typeof checkOut !== 'undefined' && checkOut ? checkOut : '' %>"
+          aria-label="Check-out date"
+        />
+      </div>
+      <div class="ab-search-seg hide-sm">
+        <label for="abWho">Who</label>
+        <input
+          id="abWho"
+          type="number"
+          name="guests"
+          min="1"
+          max="10"
+          placeholder="Add guests"
+          value="<%= typeof guests !== 'undefined' && guests ? guests : '' %>"
+          aria-label="Guests"
+        />
+      </div>
+      <% if (typeof category !== 'undefined' && category) { %>
+        <input type="hidden" name="category" value="<%= category %>" />
+      <% } %>
+      <button class="ab-search-go" type="submit" aria-label="Search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </form>
+  </div>
 
-    <a href="/logout" onclick="closeSidebar()">Logout</a>
-  <% } %>
-</div>
+  <div class="ab-dropdown" id="abDropdown">
+    <% if (!currUser) { %>
+      <a href="/signup"><b>Sign up</b></a>
+      <a href="/login">Log in</a>
+      <div class="divider"></div>
+      <a href="/listings/new">Airbnb your home</a>
+      <a href="/wishlist"><i class="fa-regular fa-heart"></i> Wishlist</a>
+      <a href="/listings">Explore</a>
+    <% } else { %>
+      <a href="/wishlist"><i class="fa-solid fa-heart" style="color:#ff385c"></i> Wishlist</a>
+      <a href="/booking/mine"><i class="fa-solid fa-calendar-check"></i> My Bookings</a>
+      <% if (currUser.role === "admin") { %>
+        <a href="/admin/dashboard">Admin Dashboard</a>
+      <% } %>
+      <div class="divider"></div>
+      <a href="/listings/new">Airbnb your home</a>
+      <a href="/listings">Explore</a>
+      <div class="divider"></div>
+      <a href="/logout">Log out</a>
+      <div class="divider"></div>
+      <a href="#" style="pointer-events:none;color:#717171;font-size:0.82rem;">
+        Signed in as <b><%= currUser.username %></b>
+      </a>
+    <% } %>
+  </div>
+</header>
 
-
-<!-- Overlay -->
-<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
-
-<!-- Sidebar Logic -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const hamburger = document.getElementById("hamburgerToggle");
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
+    const btn = document.getElementById("abMenuBtn");
+    const menu = document.getElementById("abDropdown");
+    if (btn && menu) {
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const open = menu.classList.toggle("open");
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
 
-    hamburger.addEventListener("click", function () {
-      sidebar.classList.add("active");
-      overlay.classList.add("active");
-    });
+      document.addEventListener("click", function () {
+        menu.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+      });
 
-    overlay.addEventListener("click", function () {
-      sidebar.classList.remove("active");
-      overlay.classList.remove("active");
-    });
+      menu.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+    }
+
+    const checkIn = document.getElementById("abCheckIn");
+    const checkOut = document.getElementById("abCheckOut");
+    if (checkIn && checkOut) {
+      const today = new Date().toISOString().slice(0, 10);
+      checkIn.min = today;
+      checkOut.min = today;
+      checkIn.addEventListener("change", () => {
+        if (!checkIn.value) return;
+        const next = new Date(checkIn.value + "T00:00:00");
+        next.setDate(next.getDate() + 1);
+        const minOut = next.toISOString().slice(0, 10);
+        checkOut.min = minOut;
+        if (checkOut.value && checkOut.value <= checkIn.value) {
+          checkOut.value = minOut;
+        }
+      });
+    }
   });
 </script>

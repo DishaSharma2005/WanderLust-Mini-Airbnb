@@ -1,30 +1,168 @@
 <%= layout("/layouts/boilerplate") %>
 
-<div class="container mt-4 px-3 px-md-5">
-  <h2 class="mb-4 text-center">Book Your Stay at <%= listing.title %></h2>
-
-  <div class="card p-3 p-md-4 shadow-sm mb-4">
-    <form action="/booking/<%= listing._id %>" method="POST">
-
-      <div class="mb-3">
-        <label for="checkIn" class="form-label fw-bold">Check-In Date</label>
-        <input type="date" class="form-control" id="checkIn" name="checkIn" required>
+<div class="row justify-content-center mt-4 mb-5">
+  <div class="col-lg-8">
+    <div class="d-flex gap-3 align-items-center mb-4">
+      <img
+        src="<%= listing.image.url %>"
+        alt="<%= listing.title %>"
+        style="width:88px;height:88px;object-fit:cover;border-radius:12px;"
+      >
+      <div>
+        <h2 class="mb-1" style="font-size:1.4rem;font-weight:750;"><%= listing.title %></h2>
+        <p class="mb-0 text-muted"><%= listing.location %><% if (listing.country) { %>, <%= listing.country %><% } %></p>
+        <p class="mb-0 fw-semibold">₹<%= listing.price.toLocaleString("en-IN") %> / night</p>
       </div>
+    </div>
 
-      <div class="mb-3">
-        <label for="checkOut" class="form-label fw-bold">Check-Out Date</label>
-        <input type="date" class="form-control" id="checkOut" name="checkOut" required>
-      </div>
+    <div class="card border-0 shadow-sm p-3 p-md-4" style="border-radius:16px;">
+      <form action="/booking/<%= listing._id %>" method="POST" id="bookingForm">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="checkIn" class="form-label fw-bold">Check-in</label>
+            <input type="date" class="form-control" id="checkIn" name="checkIn" value="<%= prefill.checkIn %>" required>
+          </div>
+          <div class="col-md-6">
+            <label for="checkOut" class="form-label fw-bold">Check-out</label>
+            <input type="date" class="form-control" id="checkOut" name="checkOut" value="<%= prefill.checkOut %>" required>
+            <div id="dateError" class="invalid-feedback">Check-out must be after check-in.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="guests" class="form-label fw-bold">Guests</label>
+            <input type="number" class="form-control" id="guests" name="guests" min="1" max="10" value="<%= prefill.guests || 1 %>" required>
+          </div>
+        </div>
 
-      <div class="mb-3">
-        <label for="guests" class="form-label fw-bold">Number of Guests</label>
-        <input type="number" class="form-control" id="guests" name="guests" min="1" max="10" required>
-      </div>
+        <% if (existingBookings && existingBookings.length) { %>
+          <div class="alert alert-light border mt-3 mb-0" style="border-radius:12px;">
+            <div class="fw-semibold mb-1">Already booked</div>
+            <ul class="mb-0 small text-muted">
+              <% existingBookings.forEach((b) => { %>
+                <li><%= b.checkIn.toDateString() %> → <%= b.checkOut.toDateString() %></li>
+              <% }) %>
+            </ul>
+          </div>
+        <% } %>
 
-      <div class="d-grid mt-4">
-        <button type="submit" class="btn btn-danger btn-block">Confirm Booking</button>
-      </div>
+        <div class="mt-4 p-3" style="background:#f7f7f7;border-radius:14px;">
+          <div class="d-flex justify-content-between mb-2">
+            <span id="lineNights">₹<%= listing.price.toLocaleString("en-IN") %> × <span id="nightsCount">0</span> nights</span>
+            <span id="baseTotal">₹0</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2 text-muted">
+            <span>GST (18%)</span>
+            <span id="taxTotal">₹0</span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between fw-bold">
+            <span>Total</span>
+            <span id="grandTotal">₹0</span>
+          </div>
+          <div class="small text-muted mt-1" id="guestNote"></div>
+        </div>
 
-    </form>
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn edit-btn btn-lg" style="border-radius:12px;">Confirm booking</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
+
+<script>
+  const nightly = <%= listing.price %>;
+  const checkIn = document.getElementById("checkIn");
+  const checkOut = document.getElementById("checkOut");
+  const guests = document.getElementById("guests");
+  const dateError = document.getElementById("dateError");
+  const form = document.getElementById("bookingForm");
+  const blocked = <%- JSON.stringify((existingBookings || []).map(b => ({
+    start: b.checkIn.toISOString().slice(0,10),
+    end: b.checkOut.toISOString().slice(0,10)
+  }))) %>;
+
+  function toDateInputValue(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function addDays(dateStr, days) {
+    const date = new Date(dateStr + "T00:00:00");
+    date.setDate(date.getDate() + days);
+    return toDateInputValue(date);
+  }
+
+  function nightsBetween(a, b) {
+    if (!a || !b) return 0;
+    const start = new Date(a + "T00:00:00");
+    const end = new Date(b + "T00:00:00");
+    return Math.max(0, Math.round((end - start) / 86400000));
+  }
+
+  function rangesOverlap(aStart, aEnd, bStart, bEnd) {
+    return aStart < bEnd && aEnd > bStart;
+  }
+
+  function isBlocked(start, end) {
+    return blocked.some((b) => rangesOverlap(start, end, b.start, b.end));
+  }
+
+  const today = toDateInputValue(new Date());
+  checkIn.min = today;
+  checkOut.min = today;
+
+  function syncCheckoutMin() {
+    if (!checkIn.value) {
+      checkOut.min = today;
+      return;
+    }
+    const minCheckout = addDays(checkIn.value, 1);
+    checkOut.min = minCheckout;
+    if (checkOut.value && checkOut.value <= checkIn.value) {
+      checkOut.value = minCheckout;
+    }
+  }
+
+  function updateSummary() {
+    const nights = nightsBetween(checkIn.value, checkOut.value);
+    const base = nightly * nights;
+    const tax = Math.round(base * 0.18);
+    const total = base + tax;
+    document.getElementById("nightsCount").textContent = nights;
+    document.getElementById("baseTotal").textContent = "₹" + base.toLocaleString("en-IN");
+    document.getElementById("taxTotal").textContent = "₹" + tax.toLocaleString("en-IN");
+    document.getElementById("grandTotal").textContent = "₹" + total.toLocaleString("en-IN");
+    document.getElementById("guestNote").textContent =
+      guests.value + " guest" + (Number(guests.value) === 1 ? "" : "s");
+  }
+
+  function datesAreValid() {
+    if (!checkIn.value || !checkOut.value) return true;
+    return checkOut.value > checkIn.value;
+  }
+
+  ["change", "input"].forEach((evt) => {
+    checkIn.addEventListener(evt, () => { syncCheckoutMin(); updateSummary(); });
+    checkOut.addEventListener(evt, updateSummary);
+    guests.addEventListener(evt, updateSummary);
+  });
+
+  form.addEventListener("submit", (event) => {
+    syncCheckoutMin();
+    updateSummary();
+    if (!datesAreValid()) {
+      event.preventDefault();
+      checkOut.classList.add("is-invalid");
+      return;
+    }
+    if (isBlocked(checkIn.value, checkOut.value)) {
+      event.preventDefault();
+      alert("Those dates overlap an existing booking. Please choose other dates.");
+    }
+  });
+
+  syncCheckoutMin();
+  updateSummary();
+</script>

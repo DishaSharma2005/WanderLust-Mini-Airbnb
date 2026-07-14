@@ -1,0 +1,43 @@
+<%
+  const reviews = listing.reviews || [];
+  let ratingLabel = "New";
+  if (reviews.length) {
+    const avg = reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length;
+    ratingLabel = avg.toFixed(2);
+  }
+  const wishlisted = currUser && currUser.wishlist && currUser.wishlist.map(String).includes(String(listing._id));
+  const isFavorite = reviews.length >= 2 || (listing.price && listing.price >= 2500);
+  const twoNightBase = Number(listing.price) * 2;
+  const twoNightTax = Math.round(twoNightBase * 0.18);
+  const twoNightTotal = twoNightBase + twoNightTax;
+%>
+<div class="ab-card listing-card" data-base="<%= twoNightBase %>" data-total="<%= twoNightTotal %>">
+  <form action="/wishlist/<%= listing._id %>/toggle" method="POST" class="ab-heart-form">
+    <button type="submit" class="ab-heart" aria-label="Toggle wishlist">
+      <i class="<%= wishlisted ? 'fa-solid fa-heart filled' : 'fa-regular fa-heart' %>"></i>
+    </button>
+  </form>
+
+  <a href="/listings/<%= listing._id %>" class="listing-link">
+    <div class="ab-card-media">
+      <% if (isFavorite) { %>
+        <span class="ab-badge">Guest favorite</span>
+      <% } %>
+      <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
+    </div>
+    <div class="card-body">
+      <h3 class="ab-card-title"><%= listing.title %></h3>
+      <p class="ab-card-meta">
+        <span class="price">
+          <span class="price-base">₹<%= twoNightBase.toLocaleString("en-IN") %> for 2 nights</span>
+          <span class="price-total tax-info">₹<%= twoNightTotal.toLocaleString("en-IN") %> total (incl. 18% GST)</span>
+        </span>
+        <span class="rating"><i class="fa-solid fa-star" style="font-size:0.7rem;"></i> <%= ratingLabel %></span>
+      </p>
+      <p class="mb-0" style="color:#6a6a6a;font-size:0.85rem;">
+        <%= listing.location %><% if (listing.country) { %>, <%= listing.country %><% } %>
+        <% if (listing.category) { %> · <%= listing.category %><% } %>
+      </p>
+    </div>
+  </a>
+</div>

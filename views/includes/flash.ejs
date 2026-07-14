@@ -1,12 +1,58 @@
- <% if(typeof success !=='undefined' && success.length){ %>
-    <div class="alert alert-success  alert-dismissible fade show col-6 offset-3 " role="alert">
-            <%= success %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
- <% }%>
- <% if(typeof error !=='undefined' && error.length){ %>
-    <div class="alert alert-danger  alert-dismissible fade show col-6 offset-3 " role="alert">
-            <%= error %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
- <% }%>
+<div class="toast-container position-fixed top-0 end-0 p-3 ab-toast-container">
+  <% if (typeof success !== "undefined" && success && success.length) { %>
+    <% success.forEach((msg) => { %>
+      <div
+        class="toast ab-toast ab-toast-success"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        data-bs-delay="4000"
+      >
+        <div class="toast-header">
+          <i class="fa-solid fa-circle-check me-2"></i>
+          <strong class="me-auto">Success</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body"><%= msg %></div>
+      </div>
+    <% }) %>
+  <% } %>
+
+  <% if (typeof error !== "undefined" && error && error.length) { %>
+    <% error.forEach((msg) => { %>
+      <div
+        class="toast ab-toast ab-toast-error"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        data-bs-delay="5500"
+      >
+        <div class="toast-header">
+          <i class="fa-solid fa-circle-exclamation me-2"></i>
+          <strong class="me-auto">Error</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body"><%= msg %></div>
+      </div>
+    <% }) %>
+  <% } %>
+
+  <% if (typeof info !== "undefined" && info && info.length) { %>
+    <% info.forEach((msg) => { %>
+      <div
+        class="toast ab-toast ab-toast-info"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        data-bs-delay="4000"
+      >
+        <div class="toast-header">
+          <i class="fa-solid fa-circle-info me-2"></i>
+          <strong class="me-auto">Info</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body"><%= msg %></div>
+      </div>
+    <% }) %>
+  <% } %>
+</div>

@@ -24,13 +24,14 @@
 //     .bindPopup('Exact location will be shared after booking!')
 //     .openPopup();
 // }
-const coordinates = window.listingCoordinates;
-
 document.addEventListener('DOMContentLoaded', function () {
+  const coordinates = window.listingCoordinates;
   if (!coordinates || coordinates.length !== 2) return;
 
   const lat = coordinates[1];
   const lng = coordinates[0];
+  const mapEl = document.getElementById('map');
+  if (!mapEl) return;
 
   const map = L.map('map').setView([lat, lng], 13);
 
@@ -43,9 +44,10 @@ document.addEventListener('DOMContentLoaded', function () {
     .bindPopup('Exact location will be shared after booking!')
     .openPopup();
 
-  // Set Google Maps link
   const gmapsLink = document.getElementById('gmaps-link');
   if (gmapsLink) {
     gmapsLink.href = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
   }
+
+  setTimeout(() => map.invalidateSize(), 150);
 });

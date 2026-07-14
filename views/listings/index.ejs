@@ -1,175 +1,156 @@
-<%= layout("/layouts/boilerplate")%>
-<body>
-  <style>
-    #filters {
-      display: flex;
-      align-items: center;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scrollbar-width: none; /* For Firefox */
-      -ms-overflow-style: none; /* For Internet Explorer and Edge */
-    }
-    #filters::-webkit-scrollbar {
-      display: none; /* For Chrome, Safari, and Opera */
-    }
+<%= layout("/layouts/boilerplate") %>
 
-      .filter {
-      text-align: center;
-      margin-right: 2rem;
-      margin-top: 1.5rem;
-      opacity: 0.8;
-      align-items: center;
-      
-    }
+<%
+  const experienceTiles = [
+    { label: "Cultural tours", image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=400&q=60", category: "Cities" },
+    { label: "Landmarks", image: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=400&q=60", category: "Castles" },
+    { label: "Food tours", image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=60", category: "Farms" },
+    { label: "Art workshops", image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&w=400&q=60", category: "Rooms" },
+    { label: "Cooking", image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=400&q=60", category: "Farms" },
+    { label: "Shopping & fashion", image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=400&q=60", category: "Cities" },
+    { label: "Outdoors", image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=60", category: "Mountains" },
+    { label: "Wellness", image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=400&q=60", category: "Amazing Pools" },
+  ];
+%>
 
-    .filter:hover {
-      opacity: 1.2;
-      cursor: pointer;
-    }
+  <div id="filters">
+    <% for (let cat of categories) { %>
+      <a
+        href="/listings?category=<%= encodeURIComponent(cat.name) %><%= q ? '&q=' + encodeURIComponent(q) : '' %>"
+        class="filter<%= category === cat.name ? ' active' : '' %>"
+      >
+        <div><i class="<%= cat.icon %>"></i></div>
+        <p><%= cat.name %></p>
+      </a>
+    <% } %>
 
-    .tax-toggle {
-      white-space: nowrap;
-      margin-left: auto;
-      flex-shrink: 0;
-      border: 1px solid black;
-      border-radius: 1rem;
-      height:3rem;
-      padding: 1rem;
-      align-items: center;
-      display: flex;
-    }
-
-    @media (max-width: 768px) {
-      #filters .filter:nth-child(n+6) {
-        display: none;
-      }
-@media (max-width: 768px) {
-  #filters {
-    gap: 0.2rem;
-    padding: 0.5rem 1rem;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    white-space: nowrap;
-  }
-
-  .filter {
-    flex: 0 0 auto;
-    text-align: center;
-    font-size: 0.75rem;
-    margin-right: 2rem;
-    width: 35px; /* Adjust as needed */
-  }
-
-  .filter i {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .tax-toggle {
-    flex: 0 0 auto;
-    font-size: 0.7rem;
-     padding: 0.35rem 0.75rem;
-    height: auto;
-    white-space: nowrap;
-    background-color: #f8f9fa;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    align-items: center;
-  }
-}
-.wishlist-always {
-  display: inline !important;
-  color: #8b0000 !important; /* dark red */
-  font-size: 1.3rem;
-}
-
-.wishlist-hover {
-  display: none;
-}
-
-.listing-card:hover .wishlist-hover {
-  display: inline ;
-  font-size: 1.3rem;
-}
-
-
-    }
-  </style>
-
-  <div id="filters" class="px-3">
-    <div class="filter"><div><i class="fa-solid fa-fire"></i></div><p>Trending</p></div>
-    <div class="filter"><div><i class="fa-solid fa-bed"></i></div><p>Rooms</p></div>
-    <div class="filter"><div><i class="fa-solid fa-mountain-city"></i></div><p>Cities</p></div>
-    <div class="filter"><div><i class="fa-solid fa-mountain"></i></div><p>Mountains</p></div>
-    <div class="filter"><div><i class="fa-brands fa-fort-awesome"></i></div><p>Castles</p></div>
-    <div class="filter "><div><i class="fa-solid fa-person-swimming"></i></div><p>Amazing Pools</p></div>
-    <div class="filter"><div><i class="fa-solid fa-tree"></i></div><p>Camping</p></div>
-    <div class="filter"><div><i class="fa-solid fa-wheat-awn"></i></div><p>Farms</p></div>
-    <div class="filter"><div><i class="fa-solid fa-snowflake"></i></div><p>Arctic</p></div>
-
-    <!-- Display Taxes Toggle -->
     <div class="tax-toggle">
-      <div class="form-check form-switch">
+      <div class="form-check form-switch mb-0">
         <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-        <label class="form-check-label ms-2" for="flexSwitchCheckDefault"><b>Display Taxes</b></label>
+        <label class="form-check-label ms-2" for="flexSwitchCheckDefault"><b>Display total before taxes</b></label>
       </div>
     </div>
   </div>
 
   <% if (allListing.length === 0) { %>
-  <div class="text-center mt-5">
-    <h3>No results found for "<%= q %>"</h3>
-    <a href="/listings" class="btn btn-dark edit-btn mt-3" style="color: black;">Back to all listings</a>
-  </div>
-<% } else { %>
-  <% if (q) { %>
-    <div class="px-3 mt-3">
-      <h5 class="text-muted">Showing results for "<%= q %>"</h5>
+    <div class="text-center mt-5 mb-5">
+      <h3>
+        No results found
+        <% if (category) { %> in "<%= category %>"<% } %>
+        <% if (q) { %> for "<%= q %>"<% } %>
+      </h3>
+      <a href="/listings" class="btn edit-btn mt-3">Back to all listings</a>
     </div>
-  <% } %>
-  <%} %>
-  <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 mt-3">
-
-  <% for (let listing of allListing) { %>
-    <div class="col mb-4">
-      <div class="card listing-card h-100 position-relative">
-        <!-- Wishlist heart button -->
-        <!-- Heart placed outside overlay, absolutely positioned -->
-          <form action="/wishlist/<%= listing._id %>/toggle" method="POST" 
-                style="position: absolute; top: 10px; right: 10px; z-index: 2;">
-            <button type="submit" class="btn btn-light wishlist-button">
-              <% if (currUser && currUser.wishlist && currUser.wishlist.includes(listing._id.toString())) { %>
-                <i class="fa-solid fa-heart wishlist-always"></i>
-              <% } else { %>
-                <i class="fa-regular fa-heart wishlist-hover"></i>
-              <% } %>
-            </button>
-          </form>
-
-        <!-- Listing image & link -->
-        <a href="/listings/<%= listing.id %>" class="listing-link">
-          <img class="card-img-top rounded-top-4" src="<%= listing.image.url %>" alt="listing image" style="height: 18rem; object-fit: cover;">
-          <div class="card-body">
-            <h5 class="card-title"><%= listing.title %></h5>
-            <p class="card-text">₹<%= listing.price %>/night</p>
-          </div>
-        </a>
+  <% } else { %>
+    <% if (q || category) { %>
+      <div class="mt-3 mb-2 d-flex align-items-center gap-2 flex-wrap">
+        <h2 style="font-size:1.2rem;font-weight:750;margin:0;">
+          <%= allListing.length %> stay<%= allListing.length === 1 ? '' : 's' %>
+          <% if (category) { %> in <%= category %><% } %>
+          <% if (q) { %> for "<%= q %>"<% } %>
+        </h2>
+        <a href="/listings" class="btn btn-sm btn-outline-secondary rounded-pill">Clear filters</a>
       </div>
-    </div>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 mt-1">
+        <% for (let listing of allListing) { %>
+          <div class="col">
+            <%- include("../includes/listing-card.ejs", { listing, currUser }) %>
+          </div>
+        <% } %>
+      </div>
+    <% } else { %>
+      <% for (let section of categorySections) { %>
+        <% if (section.listings.length) { %>
+          <section class="ab-row" data-rail-section>
+            <div class="ab-row-head">
+              <h2>Popular homes · <%= section.name %></h2>
+              <div class="ab-row-actions">
+                <a href="/listings?category=<%= encodeURIComponent(section.name) %>" class="btn btn-sm btn-link text-dark text-decoration-none fw-semibold">Show all</a>
+                <button type="button" class="ab-nav-btn" data-dir="-1" aria-label="Scroll left"><i class="fa-solid fa-chevron-left"></i></button>
+                <button type="button" class="ab-nav-btn" data-dir="1" aria-label="Scroll right"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+            </div>
+            <div class="ab-rail">
+              <% for (let listing of section.listings) { %>
+                <%- include("../includes/listing-card.ejs", { listing, currUser }) %>
+              <% } %>
+            </div>
+          </section>
+        <% } %>
+      <% } %>
+
+      <section class="ab-row">
+        <div class="ab-row-head">
+          <h2>Explore experiences nearby</h2>
+        </div>
+        <div class="ab-exp-rail">
+          <% for (let tile of experienceTiles) { %>
+            <a class="ab-exp" href="/listings?category=<%= encodeURIComponent(tile.category) %>">
+              <img src="<%= tile.image %>" alt="<%= tile.label %>">
+              <span><%= tile.label %></span>
+            </a>
+          <% } %>
+        </div>
+      </section>
+
+      <section class="ab-row" id="all-stays">
+        <div class="ab-row-head">
+          <h2>All stays</h2>
+        </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+          <% for (let listing of allListing) { %>
+            <div class="col">
+              <%- include("../includes/listing-card.ejs", { listing, currUser }) %>
+            </div>
+          <% } %>
+        </div>
+      </section>
+    <% } %>
   <% } %>
-</div>
+
+  <button type="button" class="fees-chip" id="feesChip" aria-live="polite">
+    Prices include all fees <i class="fa-solid fa-chevron-up"></i>
+  </button>
 
   <script>
-    let taxSwitch = document.getElementById("flexSwitchCheckDefault");
-    taxSwitch.addEventListener("click", () => {
-       let taxInfo=document.getElementsByClassName("tax-info");
-    for(info of taxInfo){
-      if(info.style.display!="inline"){
-          info.style.display="inline";
-      }else{
-         info.style.display="none";
+    const taxSwitch = document.getElementById("flexSwitchCheckDefault");
+    const feesChip = document.getElementById("feesChip");
+
+    function applyTaxDisplay(show) {
+      document.body.classList.toggle("show-totals", show);
+      document.querySelectorAll(".tax-info:not(.price-total)").forEach((info) => {
+        info.style.display = show ? "inline" : "none";
+      });
+      if (feesChip) {
+        feesChip.textContent = show
+          ? "Showing totals with taxes "
+          : "Prices include all fees ";
+        const icon = document.createElement("i");
+        icon.className = "fa-solid fa-chevron-up";
+        feesChip.appendChild(icon);
       }
     }
+
+    if (taxSwitch) {
+      taxSwitch.addEventListener("change", () => applyTaxDisplay(taxSwitch.checked));
+    }
+
+    if (feesChip && taxSwitch) {
+      feesChip.addEventListener("click", () => {
+        taxSwitch.checked = !taxSwitch.checked;
+        taxSwitch.dispatchEvent(new Event("change"));
+        taxSwitch.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    }
+
+    document.querySelectorAll("[data-rail-section]").forEach((section) => {
+      const rail = section.querySelector(".ab-rail");
+      section.querySelectorAll(".ab-nav-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const dir = Number(btn.getAttribute("data-dir") || 1);
+          rail.scrollBy({ left: dir * Math.max(rail.clientWidth * 0.8, 260), behavior: "smooth" });
+        });
+      });
     });
   </script>
-</body>

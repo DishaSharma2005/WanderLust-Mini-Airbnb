@@ -37,6 +37,14 @@
         <label for="location" class="form-label">Location</label>
         <input name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" required>
       </div>
+      <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <select name="listing[category]" id="category" class="form-select" required>
+          <% for (let cat of categories) { %>
+            <option value="<%= cat.name %>" <%= listing.category === cat.name ? "selected" : "" %>><%= cat.name %></option>
+          <% } %>
+        </select>
+      </div>
       <br><br>
       <button  class="btn btn-dark edit-btn">Save Changes</button>
       <br><br>

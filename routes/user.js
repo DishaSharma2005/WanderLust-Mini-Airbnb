@@ -12,9 +12,20 @@ router.route("/signup")// Show signup form // Handle signup form submission
 
 router.route("/login")//login form //After Login 
 .get(wrapAsync(userControllers.renderlogin))
-.post(saveRedirectUrl,passport.authenticate("local",{
-    failureRedirect:"/login",failureFlash:true
-}),wrapAsync(userControllers.login));
+.post(
+  saveRedirectUrl,
+  (req, res, next) => {
+    if (req.body.username) {
+      req.body.username = String(req.body.username).trim();
+    }
+    next();
+  },
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
+  wrapAsync(userControllers.login)
+);
 
 
 router.get("/logout",wrapAsync(userControllers.logout));

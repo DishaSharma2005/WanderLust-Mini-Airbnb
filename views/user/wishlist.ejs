@@ -1,54 +1,25 @@
 <%= layout("/layouts/boilerplate") %>
-<div class="container mt-4">
 
-<div class="container mt-4">
-  <h2 class="mb-4">My Wishlist</h2>
-
-  <% if (wishlist.length === 0) { %>
-    <div class="text-center text-muted mt-5">
-      <i class="fa-regular fa-heart fa-2x mb-3"></i>
-      <h4>No items added to wishlist</h4>
-      <p>Explore listings and add your favorites!</p>
-      <a href="/listings" class="btn btn-dark mt-2">Browse Listings</a>
-    </div>
-  <% } else { %>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-      <% for (let listing of wishlist) { %>
-       <div class="col">
-  <div class="card h-100 shadow-sm border-0 rounded-4 hover-shadow">
-    <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
-      <img
-        src="<%= listing.image.url %>"
-        class="card-img-top rounded-top-4"
-        alt="listing"
-        style="height: 230px; object-fit: cover;"
-      />
-      <div class="card-body text-left">
-        <h5 class="card-title mb-1 fw-semibold"><%= listing.title %></h5>
-        <p class="card-text text-muted">₹<%= listing.price %>/night</p>
-      </div>
-    </a>
-
-    <!-- 💡 Move the button inside card-footer for styling consistency -->
-    <div class="card-footer bg-white border-top-0 text-center">
-      <form action="/wishlist/<%= listing._id %>/toggle" method="POST">
-        <button class="btn btn-outline-danger btn-sm" type="submit">
-          <i class="fa-solid fa-heart-crack me-1"></i> Remove from Wishlist
-        </button>
-      </form>
-    </div>
-  </div>
-</div>  
-      <% } %>
-    </div>
-  <% } %>
+<div class="mt-3 mb-4">
+  <h2 style="font-size:1.5rem;font-weight:750;">Wishlist</h2>
+  <p class="text-muted mb-0">Stays you’ve saved for later.</p>
 </div>
 
-
-<style>
-  .hover-shadow:hover {
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    transform: translateY(-4px);
-    transition: all 0.2s ease-in-out;
-  }
-</style>
+<% if (!wishlist || wishlist.length === 0) { %>
+  <div class="text-center py-5 px-3" style="background:#f7f7f7;border-radius:16px;">
+    <i class="fa-regular fa-heart fa-2x mb-3" style="color:#ff385c;"></i>
+    <h4 class="fw-bold">No saved stays yet</h4>
+    <p class="text-muted">Tap the heart on any listing to save it here.</p>
+    <a href="/listings" class="btn edit-btn mt-2" style="border-radius:12px;">Explore homes</a>
+  </div>
+<% } else { %>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    <% for (let listing of wishlist) { %>
+      <% if (listing) { %>
+        <div class="col">
+          <%- include("../includes/listing-card.ejs", { listing, currUser }) %>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+<% } %>

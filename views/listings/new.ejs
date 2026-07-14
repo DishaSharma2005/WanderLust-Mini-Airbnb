@@ -57,6 +57,17 @@
           <div class="invalid-feedback">Enter location</div>
         </div>
 
+        <div class="mb-3">
+          <label for="category" class="form-label">Category</label>
+          <select name="listing[category]" id="category" class="form-select" required>
+            <option value="" disabled selected>Select a category</option>
+            <% for (let cat of categories) { %>
+              <option value="<%= cat.name %>"><%= cat.name %></option>
+            <% } %>
+          </select>
+          <div class="invalid-feedback">Select a category</div>
+        </div>
+
         <br><br>
         <button class="btn btn-dark add-btn">Add</button>
         <br><br>
