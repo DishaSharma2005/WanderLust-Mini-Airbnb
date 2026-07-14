@@ -72,6 +72,19 @@ Then open your browser and visit:
 
 ---
 
+## ☁️ Render free-tier note
+
+On Render’s **free** plan, the web service sleeps after ~15 minutes with no traffic. The next visit can take **30–60+ seconds** (cold start).
+
+This repo includes:
+- `GET /health` — lightweight keep-alive endpoint  
+- `.github/workflows/keep-alive.yml` — pings `/health` every 10 minutes  
+
+After deploying the latest code, GitHub Actions will help keep the service warm.  
+**Permanent fix:** upgrade the Render web service to a paid instance (no spin-down).
+
+---
+
 ## 📜 License
 
 This project is licensed under the MIT License.

@@ -97,6 +97,16 @@ app.get("/", (req, res) => {
   res.redirect("/listings");
 });
 
+// Lightweight health check for Render / keep-alive pings
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    ok: true,
+    service: "wanderlust",
+    uptime: Math.round(process.uptime()),
+    timestamp: new Date().toISOString(),
+  });
+});
+
 
 app.use("/listings",listingsRouter);
 app.use("/", wishlistRoutes);
