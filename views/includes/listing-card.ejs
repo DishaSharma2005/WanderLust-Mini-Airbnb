@@ -5,7 +5,7 @@
     const avg = reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length;
     ratingLabel = avg.toFixed(2);
   }
-  const wishlisted = currUser && currUser.wishlist && currUser.wishlist.map(String).includes(String(listing._id));
+  const wishlisted = typeof currUser !== "undefined" && currUser && currUser.wishlist && currUser.wishlist.map(String).includes(String(listing._id));
   const isFavorite = reviews.length >= 2 || (listing.price && listing.price >= 2500);
   const twoNightBase = Number(listing.price) * 2;
   const twoNightTax = Math.round(twoNightBase * 0.18);

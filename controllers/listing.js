@@ -48,7 +48,6 @@ module.exports.index = async (req, res) => {
         guests: guests || "",
         categories: CATEGORIES,
         categorySections,
-        currUser: req.user,
     });
 };
 

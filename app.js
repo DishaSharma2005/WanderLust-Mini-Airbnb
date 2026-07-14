@@ -86,11 +86,12 @@ passport.use(
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Always define template locals (avoids "currUser is not defined" in EJS)
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.info = req.flash("info");
-  res.locals.currUser = req.user;
+  res.locals.currUser = req.user || null;
   next();
 });
 app.get("/", (req, res) => {
@@ -127,6 +128,12 @@ app.use((err, req, res, next) => {
     if (res.headersSent) {
         return next(err); // ✅ prevents crash
     }
+
+    // Ensure navbar locals exist even when error fires early
+    res.locals.currUser = req.user || res.locals.currUser || null;
+    res.locals.success = res.locals.success || [];
+    res.locals.error = res.locals.error || [];
+    res.locals.info = res.locals.info || [];
 
     res.status(statusCode).render("listings/error.ejs", { err });
 });
