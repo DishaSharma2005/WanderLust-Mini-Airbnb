@@ -1,9 +1,10 @@
 name: Keep Render Awake
 
+# NOTE: GitHub Actions cron is often delayed (can run every few hours, not every 10 min).
+# For a reliable keep-alive, also use UptimeRobot / cron-job.org every 5 minutes.
 on:
   schedule:
-    # Every 10 minutes — before Render's ~15 min free-tier idle spin-down
-    - cron: "*/10 * * * *"
+    - cron: "*/15 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -17,6 +18,15 @@ jobs:
             URL="https://wanderlust-mini-airbnb.onrender.com/health"
           fi
           echo "Pinging $URL"
-          curl -fsS --max-time 30 "$URL"
-          echo
-          echo "Keep-alive ping OK"
+          # Cold starts can take 50–90s — retry instead of failing immediately
+          for i in 1 2 3; do
+            if curl -fsS --max-time 90 "$URL"; then
+              echo
+              echo "Keep-alive ping OK (attempt $i)"
+              exit 0
+            fi
+            echo "Attempt $i failed — retrying in 20s..."
+            sleep 20
+          done
+          echo "All ping attempts failed"
+          exit 1
